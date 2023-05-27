@@ -44,7 +44,7 @@ function Mypokemon() {
                 {Array.from(pokemonData || []).map((item, index) => {
                     return (
                         <div key={index} id={item?.id} className='bg-white/25 p-5 rounded-lg'>
-                            <img src={item?.img} alt="" onClick={() => navigate(`/pokemons/${item.id}`)} className='h-44 mx-auto' />
+                            <img src={item?.avatar} alt="" onClick={() => navigate(`/pokemons/${item.id}`)} className='h-44 mx-auto' />
                             <h5 className='uppercase text-center text-[#424372] font-bold p-3'>{item?.name}</h5>
                             <div className='text-right'>
                                 <button

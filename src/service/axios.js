@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "daisyui";
-const baseURL = "https://pokeapi.co/api/v2"
+const baseURL = "http://localhost:3001"
 
 export const client = axios.create({
     baseURL
