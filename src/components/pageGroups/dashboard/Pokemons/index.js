@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
-import axios from 'axios';
+import { getPokemons, getPokemonsByName } from '../../../../service/pokemons';
 
-const baseURL = "http://localhost:3001";
 
 function Index() {
   const navigate = useNavigate();
@@ -16,20 +16,33 @@ function Index() {
 
   const fetchPokemons = async () => {
     try {
-      const response = await axios.get(`${baseURL}/pokemons`);
-      const results = response?.data?.datas?.map((item) => {
-        return {
-          id: item.id,
-          name: item.name,
-          avatar: item.avatar,
-          moves: item.moves,
-        };
-      });
-      setPokemons(results);
+        const response = await getPokemons();
+        const data = response.data;
+
+        if (response.status === 200) {
+            const pokemons = data?.datas?.map(async (pokemon) => {
+                const responseDetail = await getPokemonsByName(pokemon?.name || "");
+                return {
+                    ...responseDetail.data,
+                    id: pokemon.id,
+                    name: pokemon.name,
+                    avatar: pokemon.avatar,
+                    type: pokemon.type,
+                    weaknesses: pokemon.weaknesses,
+                    description: pokemon.description
+                };
+            });
+
+            const results = await Promise.all(pokemons);
+            setPokemons(results);
+        } else {
+            console.log("Error:", response.status);
+        }
     } catch (error) {
-      console.log(error, "error");
+        console.log(error, "error");
     }
-  };
+}
+
 
   console.log("data : ", pokemonData)
 
@@ -43,7 +56,9 @@ function Index() {
         id: item.id,
         name: item.name,
         avatar: item.avatar,
-        moves: item.moves,
+        type: item.type,
+        weaknesses: item.weaknesses,
+        description: item.description
       },
     ];
 
@@ -60,7 +75,7 @@ function Index() {
       <h1 className="text-4xl font-bold text-white p-4 ml-5">Pokemon</h1>
       <img src="/img/logo.png" alt="" className="h-32 mx-auto" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 grid-rows-3 p-12 md:p-16 gap-x-7 gap-y-5">
-        {pokemonData.map((item, index) =>  {
+        {pokemonData.map((item, index) => {
           const myPokemonsLocalStorage = localStorage.getItem('pokemonData');
           const myPokemons = JSON.parse(myPokemonsLocalStorage) || [];
           const isAlreadyAdd = myPokemons.find((poke) => poke.id === item.id) !== undefined;
