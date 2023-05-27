@@ -2,10 +2,10 @@ import { client } from "../axios";
 
 export const getPokemons = () => client({
     method: "GET",
-    url: "/pokemon",
+    url: "/pokemons",
 });
 
 export const getPokemonsByName = (name) => client({
     method: "GET",
-    url: `/pokemon/${name}`,
+    url: `/pokemons/${name}`,
 });
