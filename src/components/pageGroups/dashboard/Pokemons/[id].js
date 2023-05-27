@@ -31,11 +31,13 @@ function DetailPokemons() {
     try {
       const payloadDetail = await getPokemonsByName(id);
       const result = {
-        ...payloadDetail.data,
-        id: payloadDetail?.data?.name || "",
-        name: payloadDetail?.data.name || "",
-        img:
-          payloadDetail?.data?.sprites?.other?.dream_world?.front_default || "",
+        ...payloadDetail.data.datas,
+        id: payloadDetail?.data?.datas?.id || "",
+        name: payloadDetail?.data?.datas?.name || "",
+        avatar: payloadDetail?.data?.datas?.avatar || "",
+        type: payloadDetail?.data?.datas?.type || "",
+        weaknesses: payloadDetail?.data?.datas?.weaknesses || "",
+        description: payloadDetail?.data?.datas?.description || ""
       };
       setPokemons(result);
     } catch (error) {
@@ -50,10 +52,10 @@ function DetailPokemons() {
 
     if (myPokemonslocalstorage) {
       const myPokemons = JSON.parse(myPokemonslocalstorage);
-      const newMyPokemons = [...myPokemons, { id: item.id, name: item.name, img: item.img }];
+      const newMyPokemons = [...myPokemons, { id: item.id, name: item.name, avatar: item.avatar, type: item.type, weaknesses: item.weaknesses, description: item.description }];
       localStorage.setItem('pokemonData', JSON.stringify(newMyPokemons));
     } else {
-      const newMyPokemons = [{ id: item.id, name: item.name, img: item.img }];
+      const newMyPokemons = [{ id: item.id, name: item.name, avatar: item.avatar, type: item.type, weaknesses: item.weaknesses, description: item.description }];
       localStorage.setItem('pokemonData', JSON.stringify(newMyPokemons));
     }
 
@@ -68,21 +70,19 @@ function DetailPokemons() {
       <Navbar />
       <div className="bg-white/25 items-center mt-10 px-8 md:px-14 p-4 rounded-3xl mx-auto max-w-xs md:max-w-[55rem] grid lg:grid-cols-2">
         <div className="hidden lg:block px-5">
-          <img src={pokemonData?.img} alt="event" className="w-[300px] rounded-xl shadow-xl " />
+          <img src={pokemonData?.avatar} alt="event" className="w-[300px] rounded-xl shadow-xl " />
         </div>
         <div className="py-2 wd:py-12 ">
           <h2 className="text-3xl font-semibold text-slate-700 md:text-3xl lg:text-4xl">{pokemonData?.name}</h2>
-          <img src={pokemonData?.img} alt="event"
+          <img src={pokemonData?.avatar} alt="event"
             className="pt-4 rounded-xl shadow-xl w-[250px] mx-auto sm:py-10 sm:w-[300px] lg:hidden" />
-          <h6 className='font-bold mt-10'>Moves</h6>
+          <h6 className='font-bold mt-10'>Type</h6>
           <p className=" text-slate-600 text-justify text-sm">
-            {Array.from(pokemonData?.moves || [])
-              .slice(0, 30)
-              .map((item) => {
-                return (
-                  <span style={{ marginRight: 4 }}>{item?.move?.name}</span>
-                );
-              })}
+            <span style={{ marginRight: 4 }}>{pokemonData?.type}</span>
+          </p>
+          <h6 className='font-bold mt-10'>Description</h6>
+          <p className=" text-slate-600 text-justify text-sm">
+            <span style={{ marginRight: 4 }}>{pokemonData?.description}</span>
           </p>
           {isAdded ? null : (
             <div className="text-center pt-8 font-bold" >
