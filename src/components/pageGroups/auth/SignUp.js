@@ -9,40 +9,26 @@ function SignUp() {
   let navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    setConfirmPassword(e.target.value);
-  };
+  const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match", {
-        position: toast.POSITION.TOP_RIGHT
-      });
-      return;
-    }
-
-    axios.post("http://localhost:3001/register", { email, password })
+    axios.post('http://localhost:3001/register', { name, email, password })
       .then((response) => {
-        localStorage.setItem("authToken", true);
-        navigate('/SignIn')
+        localStorage.setItem("authTokenRegister", true);
+        console.log(response);
+        navigate("/SignIn");
+        toast.success("Register Account Succefully!", {
+          autoClose: 3000
+        });
+        
       })
       .catch((error) => {
-        toast.error("Error occurred during sign up", {
+        toast.error("Please add a valid data", {
           position: toast.POSITION.TOP_RIGHT
         });
       });
-  };
+  }
 
   return (
     <div className="py-28 mx-5">
@@ -50,36 +36,36 @@ function SignUp() {
         <div className="auth-for-container">
           <h4 className="uppercase text-[#424372] text-4xl font-bold py-3 text-center">Sign Up</h4>
           <form className="signup-form" onSubmit={handleSubmit}>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="name">Name</label>
             <input
               style={{ width: '100%' }}
               className="items-center"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="name"
+              placeholder="Your name"
+              id="name"
+              name="name"
+            />
+            <label htmlFor="email">Email</label>
+            <input
+              style={{ width: '100%' }}
               value={email}
-              onChange={handleEmailChange}
-              type="email"
-              placeholder="youremail@gmail.com"
-              id="email"
-              name="email"
+              onChange={(e) => setEmail(e.target.value)}
+              type="Email"
+              placeholder="youremail.com"
+              id="Email"
+              name="Email"
             />
             <label htmlFor="password">Password</label>
             <input
               style={{ width: '100%' }}
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="********"
               id="password"
               name="password"
-            />
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              style={{ width: '100%' }}
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
-              type="password"
-              placeholder="********"
-              id="confirmPassword"
-              name="confirmPassword"
             />
             <div className="my-3">
               <button
