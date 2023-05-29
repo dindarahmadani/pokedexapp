@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import "./SigninStyle.css";
-import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 
 function SignIn() {
-  let navigate = useNavigate();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -23,10 +21,19 @@ function SignIn() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axios.post("https://reqres.in/api/login", { email, password })
+    axios.post("http://localhost:3001/auth/login", { email, password })
       .then((response) => {
-        localStorage.setItem("authToken", true);
-        window.location.href = "/"
+        console.log("token", response.data.token);
+        const token = response.data.token
+        if (token) {
+          localStorage.setItem("authToken", token);
+          window.location.href = "/"
+        } else {
+          toast.error("Invalid email and password", {
+            position: toast.POSITION.TOP_RIGHT
+          });
+        }
+
       })
       .catch((error) => {
         toast.error("Invalid email and password", {
