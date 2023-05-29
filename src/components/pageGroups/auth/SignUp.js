@@ -32,7 +32,7 @@ function SignUp() {
       return;
     }
 
-    axios.post("http://localhost:3001/auth/register", { email, password })
+    axios.post("http://localhost:3001/register", { email, password })
       .then((response) => {
         localStorage.setItem("authToken", true);
         navigate('/SignIn')
