@@ -38,7 +38,7 @@ function SignUp() {
           <form className="signup-form" onSubmit={handleSubmit}>
             <label htmlFor="name">Name</label>
             <input
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: '#ffffff' }}
               className="items-center"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -49,7 +49,7 @@ function SignUp() {
             />
             <label htmlFor="email">Email</label>
             <input
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: '#ffffff' }}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="Email"
@@ -59,7 +59,7 @@ function SignUp() {
             />
             <label htmlFor="password">Password</label>
             <input
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: '#ffffff' }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
