@@ -50,14 +50,14 @@ function SignIn() {
           <form className="signin-form" onSubmit={handleSubmit}>
             <label htmlFor="email">Email</label>
             <input
-              style={{ width: '100%' }}
+              style={{ width: '100%',  backgroundColor: '#ffffff' }}
               className='items-center'
               value={email}
               onChange={handleEmailChange}
               type="email" placeholder="youremail@gmail.com" id="email" name="email" />
             <label htmlFor="password">password</label>
             <input
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: '#ffffff' }}
               value={password} onChange={handlePasswordChange} type="password" placeholder="********" id="password" name="password" />
             <div className='my-3'>
               <button
