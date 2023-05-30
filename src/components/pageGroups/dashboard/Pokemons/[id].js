@@ -76,15 +76,15 @@ function DetailPokemons() {
           <h2 className="text-3xl font-semibold text-slate-700 md:text-3xl lg:text-4xl">{pokemonData?.name}</h2>
           <img src={pokemonData?.avatar} alt="event"
             className="pt-4 rounded-xl shadow-xl w-[250px] mx-auto sm:py-10 sm:w-[300px] lg:hidden" />
-          <h6 className='font-bold mt-6'>Type</h6>
+          <h6 className='font-bold mt-6 text-slate-700'>Type</h6>
           <p className=" text-slate-600 text-justify text-sm">
             <span>{pokemonData?.type}</span>
           </p>
-          <h6 className='font-bold mt-4'>Weaknesses</h6>
+          <h6 className='font-bold mt-4 text-slate-700'>Weaknesses</h6>
           <p className=" text-slate-600 text-justify text-sm">
             <span>{pokemonData?.weaknesses}</span>
           </p>
-          <h6 className='font-bold mt-4'>Description</h6>
+          <h6 className='font-bold mt-4 text-slate-700'>Description</h6>
           <p className=" text-slate-600 text-justify text-sm">
             <span>{pokemonData?.description}</span>
           </p>
