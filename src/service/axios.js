@@ -1,6 +1,6 @@
 import axios from "axios";
 import { config } from "daisyui";
-const baseURL = "http://localhost:3001"
+const baseURL = "https://dinda-pokedex-server-production-50dc.up.railway.app"
 
 export const client = axios.create({
     baseURL

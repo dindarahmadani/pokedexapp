@@ -13,7 +13,7 @@ function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/register', { name, email, password })
+    axios.post('https://dinda-pokedex-server-production-50dc.up.railway.app/register', { name, email, password })
       .then((response) => {
         localStorage.setItem("authTokenRegister", true);
         console.log(response);
