@@ -13,6 +13,7 @@ function Navbar() {
 
     function handleOnClick() {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('idUserLogged');
         window.location.href = "/"
     }
 
