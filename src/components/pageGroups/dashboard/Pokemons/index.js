@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { getPokemons, getPokemonsByName } from '../../../../service/pokemons';
+import axios from 'axios';
 
 
 function Index() {
   const navigate = useNavigate();
   const [pokemonData, setPokemons] = useState([]);
-  const [pokemonAdd, setPokemonAdd] = useState(null);
+  // const [pokemonAdd, setPokemonAdd] = useState(null);
 
   useEffect(() => {
     fetchPokemons();
@@ -46,26 +47,35 @@ function Index() {
 
   console.log("data : ", pokemonData)
 
-  const addPokemon = (item) => {
-    const myPokemonsLocalStorage = localStorage.getItem('pokemonData');
-    const myPokemons = myPokemonsLocalStorage ? JSON.parse(myPokemonsLocalStorage) : [];
+  const addPokemon = async (item) => {
+    try {
+      const getLocalStorageIdUserLogin = localStorage.getItem('idUserLogged');
+      const data = {
+        pokemon_id: item.id,
+        user_id: getLocalStorageIdUserLogin,
+      };
 
-    const newMyPokemons = [
-      ...myPokemons,
-      {
-        id: item.id,
-        name: item.name,
-        avatar: item.avatar,
-        type: item.type,
-        weaknesses: item.weaknesses,
-        description: item.description
-      },
-    ];
+      const existingDataDb = await axios.get('http://localhost:3001/pokemons/collection', {
+        params: {
+          pokemon_id: item.id,
+          user_id: getLocalStorageIdUserLogin,
+         },
+      });
 
-    localStorage.setItem('pokemonData', JSON.stringify(newMyPokemons));
-
-    toast("Add Pokemon Success!");
-    setPokemonAdd(null);
+      if (existingDataDb.data?.datas?.find(data => data.pokemons_id === item.id)) {
+        toast.error("Pokemon already exists",{
+          autoClose: 200
+        })
+        return;      
+      }
+      const response = await axios.post('http://localhost:3001/pokemons/collection', data);
+      toast("Add Pokemon Success!",{
+        autoClose: 1000
+      })
+      console.log('Data berhasil ditambahkan ke database:', response.data);
+    } catch (error) {
+      console.log('Gagal menambahkan data ke database:', error.message);
+    }
   };
 
   console.log(pokemonData);
@@ -76,31 +86,31 @@ function Index() {
       <img src="/img/logo.png" alt="" className="h-32 mx-auto" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 grid-rows-3 p-12 md:p-16 gap-x-7 gap-y-5">
         {pokemonData.map((item, index) => {
-          const myPokemonsLocalStorage = localStorage.getItem('pokemonData');
-          const myPokemons = JSON.parse(myPokemonsLocalStorage) || [];
-          const isAlreadyAdd = myPokemons.find((poke) => poke.id === item.id) !== undefined;
+          // const myPokemonsLocalStorage = localStorage.getItem('pokemonData');
+          // const myPokemons = JSON.parse(myPokemonsLocalStorage) || [];
+          // const isAlreadyAdd = myPokemons.find((poke) => poke.id === item.id) !== undefined;
           return (
             <div key={index} id={item?.id} className="bg-white/25 p-5 rounded-lg">
               <img src={item?.avatar} alt="" onClick={() => navigate(`/pokemons/${item.id}`)} className="h-44 mx-auto" />
               <h5 className="uppercase text-center text-[#424372] font-bold p-3">{item?.name}</h5>
               <div className="text-right">
-                {isAlreadyAdd ? (
+                {/* {isAlreadyAdd ? (
                   <span className="text-gray-500 text-xs">Already added</span>
-                ) : (
+                ) : ( */}
                   <button
                     id="addButton"
-                    onClick={() => setPokemonAdd(item)}
+                    onClick={() => addPokemon(item)}
                     className="inline-block px-3 py-2.5 bg-[#8687bb] text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-[#d4a695] hover:shadow-lg focus:bg-[#8687bb] focus:shadow-lg focus:outline-none focus:ring-0 active:[#d4a695] active:shadow-lg transition duration-150 ease-in-out"
                   >
                     Add
                   </button>
-                )}
+                {/* )} */}
               </div>
               <ToastContainer />
             </div>
           );
         })}
-        <input type="checkbox" checked={pokemonAdd !== null} className="modal-toggle" />
+        {/* <input type="checkbox" checked={pokemonAdd !== null} className="modal-toggle" />
         <div className="modal modal-bottom sm:modal-middle">
           <div className="modal-box text-left bg-slate-800">
             <h3 className="font-semibold text-white text-base">Add {pokemonAdd?.name} to My Pokemon?</h3>
@@ -111,7 +121,7 @@ function Index() {
                 onClick={() => addPokemon(pokemonAdd)}>Yes!</button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
