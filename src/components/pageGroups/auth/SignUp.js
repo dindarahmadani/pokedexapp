@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 function SignUp() {
-  let navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('https://dinda-pokedex-server-production-50dc.up.railway.app/register', { name, email, password })
+    axios.post('http://localhost:3001/register', { name, email, password })
       .then((response) => {
         localStorage.setItem("authTokenRegister", true);
         console.log(response);
-        navigate("/SignIn");
         toast.success("Register Account Succefully!", {
-          autoClose: 3000
+          autoClose: 5000
         });
-        
+        window.location.href = "/SignIn"
       })
       .catch((error) => {
         toast.error("Please add a valid data", {
