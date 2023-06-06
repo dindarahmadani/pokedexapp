@@ -10,40 +10,61 @@ function Index() {
   const navigate = useNavigate();
   const [pokemonData, setPokemons] = useState([]);
   // const [pokemonAdd, setPokemonAdd] = useState(null);
+  const [myPokemonCollection, setMyPokemonCollection] = useState([]);
 
   useEffect(() => {
     fetchPokemons();
+    fetchMyPokemonCollection();
   }, []);
 
   const fetchPokemons = async () => {
     try {
-        const response = await getPokemons();
-        const data = response.data;
+      const response = await getPokemons();
+      const data = response.data;
 
-        if (response.status === 200) {
-            const pokemons = data?.datas?.map(async (pokemon) => {
-                const responseDetail = await getPokemonsByName(pokemon?.name || "");
-                return {
-                    ...responseDetail.data,
-                    id: pokemon.id,
-                    name: pokemon.name,
-                    avatar: pokemon.avatar,
-                    type: pokemon.type,
-                    weaknesses: pokemon.weaknesses,
-                    description: pokemon.description
-                };
-            });
+      if (response.status === 200) {
+        const pokemons = data?.datas?.map(async (pokemon) => {
+          const responseDetail = await getPokemonsByName(pokemon?.name || "");
+          return {
+            ...responseDetail.data,
+            id: pokemon.id,
+            name: pokemon.name,
+            avatar: pokemon.avatar,
+            type: pokemon.type,
+            weaknesses: pokemon.weaknesses,
+            description: pokemon.description
+          };
+        });
 
-            const results = await Promise.all(pokemons);
-            setPokemons(results);
-        } else {
-            console.log("Error:", response.status);
-        }
+        const results = await Promise.all(pokemons);
+        setPokemons(results);
+      } else {
+        console.log("Error:", response.status);
+      }
     } catch (error) {
-        console.log(error, "error");
+      console.log(error, "error");
     }
-}
+  }
+  const fetchMyPokemonCollection = async () => {
+    try {
+      const getLocalStorageIdUserLogin = localStorage.getItem('idUserLogged');
 
+      const response = await axios.get('http://localhost:3001/pokemons/collection', {
+        params: {
+          user_id: getLocalStorageIdUserLogin,
+        },
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
+        setMyPokemonCollection(data.datas);
+      } else {
+        console.log("Error:", response.status);
+      }
+    } catch (error) {
+      console.log('Error fetching my Pokemon collection:', error.message);
+    }
+  };
 
   console.log("data : ", pokemonData)
 
@@ -55,24 +76,12 @@ function Index() {
         user_id: getLocalStorageIdUserLogin,
       };
 
-      const existingDataDb = await axios.get('http://localhost:3001/pokemons/collection', {
-        params: {
-          pokemon_id: item.id,
-          user_id: getLocalStorageIdUserLogin,
-         },
-      });
-
-      if (existingDataDb.data?.datas?.find(data => data.pokemons_id === item.id)) {
-        toast.error("Pokemon already exists",{
-          autoClose: 200
-        })
-        return;      
-      }
       const response = await axios.post('http://localhost:3001/pokemons/collection', data);
-      toast("Add Pokemon Success!",{
+      toast("Add Pokemon Success!", {
         autoClose: 1000
       })
       console.log('Data berhasil ditambahkan ke database:', response.data);
+      setMyPokemonCollection([...myPokemonCollection, item]);
     } catch (error) {
       console.log('Gagal menambahkan data ke database:', error.message);
     }
@@ -89,14 +98,15 @@ function Index() {
           // const myPokemonsLocalStorage = localStorage.getItem('pokemonData');
           // const myPokemons = JSON.parse(myPokemonsLocalStorage) || [];
           // const isAlreadyAdd = myPokemons.find((poke) => poke.id === item.id) !== undefined;
+          const isAlreadyAdd = myPokemonCollection.find((pokemon) => pokemon.id === item.id);
           return (
             <div key={index} id={item?.id} className="bg-white/25 p-5 rounded-lg">
               <img src={item?.avatar} alt="" onClick={() => navigate(`/pokemons/${item.id}`)} className="h-44 mx-auto" />
               <h5 className="uppercase text-center text-[#424372] font-bold p-3">{item?.name}</h5>
               <div className="text-right">
-                {/* {isAlreadyAdd ? (
+                {isAlreadyAdd ? (
                   <span className="text-gray-500 text-xs">Already added</span>
-                ) : ( */}
+                ) : (
                   <button
                     id="addButton"
                     onClick={() => addPokemon(item)}
@@ -104,7 +114,7 @@ function Index() {
                   >
                     Add
                   </button>
-                {/* )} */}
+                )}
               </div>
               <ToastContainer />
             </div>
